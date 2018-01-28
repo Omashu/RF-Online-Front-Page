@@ -1,0 +1,25 @@
+doctype html
+html(lang="en")
+  head
+    title= title
+    link(rel='stylesheet', href=assetBuild("app.css"))
+  body
+    include cover
+    include navbar
+
+    .container
+      .container-news
+        .row
+          each el in news
+            .col-3
+              .card
+                .card-body
+                  .card-title
+                    h5
+                      a(href=el.url)= el.title
+                  .card-text
+                    span!= el.content
+                    span &nbsp;
+                    a(href=el.url) Читать далее...
+
+    script(src=assetBuild("app.js") async defer)
