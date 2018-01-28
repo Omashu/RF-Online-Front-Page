@@ -36,15 +36,8 @@ const ParseBody = (body) => {
 
   const promises = _.map(listItems, (listItem, index) => {
     return new Promise((resolve, reject) => {
-      if (!listItem)
-        return resolve(null)
-
       const data = listItem
       .match(/<h3.+?title[\s\S]+?>[\s\S]+?<a\shref="(.+?)"[\s\S]+class="PreviewTooltip"[\s\S]+?>(.*?)<\/a>[\s\S]+?DateTime[\s\S]+?>(.+?)<\//)
-
-      if (!data)
-        return resolve(null)
-
       const [ match, url, title, date ] = data
 
       return resolve({
