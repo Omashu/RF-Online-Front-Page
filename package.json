@@ -19,6 +19,7 @@
     "dompurify": "^1.0.3",
     "jsdom": "^11.6.1",
     "koa": "^2.4.1",
+    "koa-router": "^7.3.0",
     "koa-static": "^4.0.2",
     "lodash": "^4.17.4",
     "log4js": "^2.5.2",

@@ -1,4 +1,5 @@
 import Koa from 'koa'
+import Router from 'koa-router'
 import Promise from 'bluebird'
 
 import view from './view'
@@ -9,16 +10,18 @@ import parser from './parser'
 import config from 'config'
 
 const app = new Koa();
+const router = new Router()
 
-app.use(require("koa-static")("./public"))
-
-app.use(async ctx => {
-  const html = view.render("index", {
+router.get("/", (ctx, next) => {
+  ctx.body = view.render("index", {
     news: news.getAll()
   })
-
-  ctx.body = html
 })
+
+app
+  .use(require("koa-static")("./public"))
+  .use(router.routes())
+  .use(router.allowedMethods())
 
 app.listen(config.get('server.port'), config.get("server.host"), () => {
   logger.info(`Listen on ${config.get('server.port')}`)
