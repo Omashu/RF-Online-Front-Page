@@ -88,9 +88,9 @@ export default (data) => {
       textContent(aPlayersElements, data.players.a)
 
     if (data.players.b !== undefined)
-      textContent(aPlayersElements, data.players.b)
+      textContent(bPlayersElements, data.players.b)
 
     if (data.players.c !== undefined)
-      textContent(aPlayersElements, data.players.c)
+      textContent(cPlayersElements, data.players.c)
   }
 }
