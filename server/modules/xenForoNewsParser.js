@@ -3,14 +3,18 @@ import Promise from 'bluebird'
 import rp from 'request-promise'
 import config from 'config'
 import url from 'url'
-import logger from './logger'
-import news from './news'
-import { purifyHtml, purifyText } from './dompurify'
+
+import { createLogger } from '../utils/logger'
+import { purifyHtml, purifyText } from '../utils/dompurify'
+
+import news from '../reps/news'
+
+const logger = createLogger("Module `xenForoNewsParser`")
 
 const GetBody = () => {
   logger.debug(`Try to load external body data...`)
 
-  return rp(config.get("parser.sectionUrl"))
+  return rp(config.get(`modules.xenForoNewsParser.sectionUrl`))
   .then(body => {
     logger.debug(`External body loaded`)
     return body
@@ -48,7 +52,7 @@ const ParseBody = (body) => {
       })
     })
     .then(data => {
-      const buildUrl = `${config.get("parser.baseUrl")}${data.url}`
+      const buildUrl = `${config.get(`modules.xenForoNewsParser.baseUrl`)}${data.url}`
       return {...data, url: buildUrl}
     })
     .then(data => {
@@ -90,7 +94,7 @@ const ParseBody = (body) => {
 }
 
 const CreateTimer = () => {
-  setTimeout(Process, config.get("parser.tm") * 1000)
+  setTimeout(Process, config.get(`modules.xenForoNewsParser.tm`) * 1000)
 }
 
 const Process = () => {
@@ -107,14 +111,21 @@ const Process = () => {
   })
   .then(newNews => {
     logger.info(`The parser process end by success, total collected news ${newNews.length}`)
-    logger.info(`Again through ${config.get("parser.tm")} seconds`)
+    logger.info(`Again through ${config.get(`modules.xenForoNewsParser.tm`)} seconds`)
     CreateTimer()
   })
   .catch(err => {
     logger.error(`The parser process end by error`, err)
-    logger.info(`Should try again through ${config.get("parser.tm")} seconds`)
+    logger.info(`Should try again through ${config.get(`modules.xenForoNewsParser.tm`)} seconds`)
     CreateTimer()
   })
 }
 
-export default Process
+export const initialize = () => {
+  logger.info(`Initialized`)
+  Process()
+}
+
+export default {
+  initialize
+}

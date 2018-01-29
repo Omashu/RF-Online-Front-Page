@@ -6,3 +6,17 @@
       div.value Открытие никогда
       div.value
         a(href=startUrl).press-to-start.btn Начать играть
+      div.value.mrt_20
+        span(class="color_white_7") Логин:&nbsp;
+        span(class=cx("js-login__status", {online: serverState.loginStatus, offline: !serverState.loginStatus}))= serverState.loginStatus?"Онлайн":"Оффлайн"
+        span(class="color_white_7") &nbsp;Сервер:&nbsp;
+        span(class=cx("js-server__status", {online: serverState.serverStatus, offline: !serverState.serverStatus}))= serverState.serverStatus?"Онлайн":"Оффлайн"
+      div.value
+        span(class="color_white_7") Всего онлайн:&nbsp;
+        span(class="js-count__total badge badge-light")= serverState.players.total
+        span(class="color_white_7") &nbsp;Акретия:&nbsp;
+        span(class="js-count__a badge badge-light")= serverState.players.a
+        span(class="color_white_7") &nbsp;Беллато:&nbsp;
+        span(class="js-count__b badge badge-light")= serverState.players.b
+        span(class="color_white_7") &nbsp;Кора:&nbsp;
+        span(class="js-count__c badge badge-light")= serverState.players.c

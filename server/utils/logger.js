@@ -54,33 +54,50 @@ const getLogger = function(category) {
   return logger
 }
 
-const Logger = new (function() {
+const Logger = (function() {
+  this.prefix = null
+  this.combineArgs = (args) => {
+    return this.prefix
+      ? [this.prefix, ...args] : args
+  }
+  this.setPrefix = (value) => {
+    this.prefix = value;
+    return this;
+  }
+
   this.info = function(...args) {
-    getLogger().info.apply(getLogger(), args)
+    getLogger().info.apply(getLogger(), this.combineArgs(args))
     return this;
   }
 
   this.trace = function(...args) {
-    getLogger("debug").trace.apply(getLogger("debug"), args)
+    getLogger("debug").trace.apply(getLogger("debug"), this.combineArgs(args))
     return this;
   }
 
   this.debug = function(...args) {
-    getLogger("debug").debug.apply(getLogger("debug"), args)
+    getLogger("debug").debug.apply(getLogger("debug"), this.combineArgs(args))
     return this;
   }
 
   this.error = function(...args) {
-    getLogger("error").error.apply(getLogger("error"), args)
+    getLogger("error").error.apply(getLogger("error"), this.combineArgs(args))
     return this;
   }
 
   this.fatal = function(...args) {
-    getLogger("error").fatal.apply(getLogger("error"), args)
+    getLogger("error").fatal.apply(getLogger("error"), this.combineArgs(args))
     return this;
   }
 
   return this;
 });
 
-export default Logger
+const LoggerDefault = new Logger
+
+export default LoggerDefault
+
+export const createLogger = (prefix) => {
+  return (new Logger)
+    .setPrefix(prefix)
+}

@@ -21,5 +21,6 @@ html(lang="en")
                     span!= el.content
                     span &nbsp;
                     a(href=el.url) Читать далее...
-
+    script.
+        window.__CONFIG__ = !{JSON.stringify({ url }).replace(/</g, '\\u003c')};
     script(src=assetBuild("app.js") async defer)

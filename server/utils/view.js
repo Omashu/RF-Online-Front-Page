@@ -1,6 +1,7 @@
 import pug from 'pug'
 import config from 'config'
-import packagejson from '../package.json'
+import cx from 'classnames'
+import packagejson from '../../package.json'
 
 const assetBuild = (asset, min = true) => {
   var url = config.get('app.url') + '/build/';
@@ -18,6 +19,7 @@ export const render = (view, options = {}) => {
     navigation: config.get("app.navigation"),
     startUrl: config.get("app.startUrl"),
     url: config.get("app.url"),
+    cx,
     assetBuild,
     ...options
   })
