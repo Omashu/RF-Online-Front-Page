@@ -13,6 +13,7 @@ const sectionUrl = config.get(`modules.xenForoNewsParser.sectionUrl`)
 const baseUrl = config.get(`modules.xenForoNewsParser.baseUrl`)
 const tm = config.get(`modules.xenForoNewsParser.tm`)
 const limit = config.get(`modules.xenForoNewsParser.limit`)
+const parsePoster = config.get(`modules.xenForoNewsParser.parsePoster`)
 const logger = createLogger("Module `xenForoNewsParser`")
 
 const GetBody = () => {
@@ -98,10 +99,12 @@ const ParseBody = (body) => {
       parsedData.content = purifyText(purified).substring(0, 200)
 
       // find first image
-      const matchImage = purified.match(/img.+?src=('|")(.+?)('|")/)
+      if (parsePoster) {
+        const matchImage = purified.match(/img.+?src=('|")(.+?)('|")/)
 
-      if (matchImage && matchImage.length) {
-        parsedData.poster = purifyText(matchImage[2])
+        if (matchImage && matchImage.length) {
+          parsedData.poster = purifyText(matchImage[2])
+        }
       }
 
       return {...data, ...parsedData}

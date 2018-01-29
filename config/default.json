@@ -43,7 +43,8 @@
       "active": true,
       "baseUrl": "http://localhost:8091/",
       "sectionUrl": "http://localhost:8091/section/news",
-      "limit": 4,
+      "limit": 20,
+      "parsePoster": true,
       "tm": 3600
     },
     "ws": {
