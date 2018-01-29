@@ -40,16 +40,14 @@
   },
   "modules": {
     "xenForoNewsParser": {
-      "active": false,
-      // forum url
+      "active": true,
       "baseUrl": "http://localhost:8091/",
-      // forum section url
       "sectionUrl": "http://localhost:8091/section/news",
-      // check every n seconds 
+      "limit": 4,
       "tm": 3600
     },
     "ws": {
-      "active": true,
+      "active": false,
       // forum url
       "connectTo": "ws://localhost:8092",
     }

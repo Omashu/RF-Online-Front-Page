@@ -13,6 +13,8 @@ html(lang="en")
           each el in news
             .col-3
               .card
+                if el.poster
+                  img(class="card-img-top",src=el.poster,alt=el.title,title=el.title)
                 .card-body
                   .card-title
                     h5

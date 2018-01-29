@@ -9,12 +9,16 @@ import { purifyHtml, purifyText } from '../utils/dompurify'
 
 import news from '../reps/news'
 
+const sectionUrl = config.get(`modules.xenForoNewsParser.sectionUrl`)
+const baseUrl = config.get(`modules.xenForoNewsParser.baseUrl`)
+const tm = config.get(`modules.xenForoNewsParser.tm`)
+const limit = config.get(`modules.xenForoNewsParser.limit`)
 const logger = createLogger("Module `xenForoNewsParser`")
 
 const GetBody = () => {
   logger.debug(`Try to load external body data...`)
 
-  return rp(config.get(`modules.xenForoNewsParser.sectionUrl`))
+  return rp(sectionUrl)
   .then(body => {
     logger.debug(`External body loaded`)
     return body
@@ -27,15 +31,19 @@ const GetBody = () => {
 
 const ParseBody = (body) => {
   logger.debug(`Try to parse body content...`)
-  const listItems = body.match(/<li.+?discussionListItem.+?".+?>([\s\S]+?)<\/li>/g)
+  const matches = body.match(/<li.+?discussionListItem.+?".+?>([\s\S]+?)<\/li>/g)
 
-  if (!listItems) {
+  if (!matches) {
     const err = new Error(`No Items Found`)
     logger.debug(err.message)
     return Promise.reject(err)
   }
 
-  logger.debug(`Founded ${listItems.length} items`)
+  const usageCount = matches.length < limit ? matches.length : limit
+  logger.debug(`Founded ${matches.length} items, usage ${usageCount}`)
+
+  const listItems = matches.splice(0, usageCount)
+
   logger.debug(`Supplement Information (in parallel mode)`)
 
   const promises = _.map(listItems, (listItem, index) => {
@@ -52,7 +60,7 @@ const ParseBody = (body) => {
       })
     })
     .then(data => {
-      const buildUrl = `${config.get(`modules.xenForoNewsParser.baseUrl`)}${data.url}`
+      const buildUrl = `${baseUrl}${data.url}`
       return {...data, url: buildUrl}
     })
     .then(data => {
@@ -75,12 +83,28 @@ const ParseBody = (body) => {
         return null
       }
 
+      const parsedData = {
+        content: "",
+        poster: null
+      }
+
       const match = body.match(/messageList[\s\S]+?messageContent">[\s\S]+?<article>([\s\S]+?)<\/article[\s\S]+?<\/div>/)
 
-      if (!match)
-        return {...data, content: ""}
+      if (!match) {
+        return {...data, ...parsedData}
+      }
 
-      return {...data, content: purifyText(match[1] || "").substring(0, 200)}
+      const purified = purifyHtml(match[1] || "");
+      parsedData.content = purifyText(purified).substring(0, 200)
+
+      // find first image
+      const matchImage = purified.match(/img.+?src=('|")(.+?)('|")/)
+
+      if (matchImage && matchImage.length) {
+        parsedData.poster = purifyText(matchImage[2])
+      }
+
+      return {...data, ...parsedData}
     })
   })
 
@@ -94,7 +118,7 @@ const ParseBody = (body) => {
 }
 
 const CreateTimer = () => {
-  setTimeout(Process, config.get(`modules.xenForoNewsParser.tm`) * 1000)
+  setTimeout(Process, tm * 1000)
 }
 
 const Process = () => {
@@ -111,12 +135,12 @@ const Process = () => {
   })
   .then(newNews => {
     logger.info(`The parser process end by success, total collected news ${newNews.length}`)
-    logger.info(`Again through ${config.get(`modules.xenForoNewsParser.tm`)} seconds`)
+    logger.info(`Again through ${tm} seconds`)
     CreateTimer()
   })
   .catch(err => {
     logger.error(`The parser process end by error`, err)
-    logger.info(`Should try again through ${config.get(`modules.xenForoNewsParser.tm`)} seconds`)
+    logger.info(`Should try again through ${tm} seconds`)
     CreateTimer()
   })
 }
