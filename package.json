@@ -15,6 +15,7 @@
   "dependencies": {
     "bluebird": "^3.5.1",
     "bootstrap": "^4.0.0",
+    "classnames": "^2.2.5",
     "config": "^1.29.2",
     "dompurify": "^1.0.3",
     "jsdom": "^11.6.1",
