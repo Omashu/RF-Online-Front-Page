@@ -10,7 +10,7 @@ export const socket = io(config.url, {
   perMessageDeflate: false
 });
 
-socket.on('serverState', online);
+socket.on('ws.updated', online);
 
 export default {
   socket
