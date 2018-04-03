@@ -4,25 +4,26 @@ html(lang="en")
     title= title
     link(rel='stylesheet', href=assetBuild("app.css"))
   body
-    include cover
     include navbar
+    include cover
 
-    .container
-      .container-news
-        .row
-          each el in news
-            .col-3
-              .card
-                if el.poster
-                  img(class="card-img-top",src=el.poster,alt=el.title,title=el.title)
-                .card-body
-                  .card-title
-                    h5
-                      a(href=el.url)= el.title
-                  .card-text
-                    span!= el.content
-                    span &nbsp;
-                    a(href=el.url) Читать далее...
+    if getModule('xenForoParser.news')
+      .container
+        .container-news
+          .row.row-cards
+            each el in getModule('xenForoParser.news')
+              .col-sm-6.col-lg-4
+                .card
+                  if el.poster
+                    img(class="card-img-top",src=el.poster,alt=el.title,title=el.title)
+                  .card-body
+                    .card-title
+                      h5
+                        a(href=el.url)= el.title
+                    .card-text
+                      span!= el.content
+                      span &nbsp;
+                      a(href=el.url) Читать далее...
     script.
         window.__CONFIG__ = !{JSON.stringify({ url }).replace(/</g, '\\u003c')};
     script(src=assetBuild("app.js") async defer)

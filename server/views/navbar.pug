@@ -1,6 +1,6 @@
 .navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top
   .container
-    .navbar-brand= brand
+    a(href=url).navbar-brand= brand
 
     .collapse.navbar-collapse
       ul.navbar-nav.mr-auto.mt-2.mt-lg-0
@@ -8,4 +8,5 @@
           li.nav-item
             a.nav-link(href=el.url)= el.title
       .my-2.my-lg-0
-        a.btn.btn-outline-success.my-2.my-sm-0.navbar-press-to-start(href=startUrl) Начать играть
+        a.btn.btn-outline-success.my-2.my-sm-0.navbar-press-to-start(href=startUrl)
+          | Начать играть

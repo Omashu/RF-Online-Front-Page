@@ -1,51 +1,76 @@
-import config from 'config'
-import WebSocket from 'ws'
-import Router from 'koa-router'
-import serverState from '../reps/serverState'
-import { createLogger } from '../utils/logger'
-import { SocketEmitter, ServerStateEmitter } from '../events'
-import { io } from '../app'
+import WebSocket from 'ws';
+import { merge } from 'lodash';
 
-let client;
-const logger = createLogger("Module `ws`")
+const initialData = {
+  connection: false,
+  connected: false,
 
-const createConnect = () => {
-  logger.info(`Trying to connect to`, config.get("modules.ws.connectTo"))
+  loginPending: false,
+  loginStatus: false,
+  loginErrorCode: null,
 
-  client = new WebSocket(config.get("modules.ws.connectTo"))
+  serverPending: false,
+  serverStatus: false,
+  serverErrorCode: null,
 
-  client.on("open", () => logger.info(`Successfully connected to server`));
+  players: {
+    a: 0,
+    b: 0,
+    c: 0,
+    total: 0,
+    map: {}
+  }
+};
 
-  client.on("close", () => {
-    logger.info(`Connection lost, try reconnect after 5 seconds`)
-    setTimeout(createConnect, 5000)
-  })
+export default module.exports = function Init({ logger, options, socket }) {
+  this.connectTo = options.connectTo;
+  this.client = undefined;
 
-  client.on("message", (message) => {
-    const data = JSON.parse(message.toString())
-    SocketEmitter.emit(data[0], data[1])
-  })
+  this.storageData = merge({}, initialData);
 
-  client.on("error", (err) => logger.error(err))
-}
+  this.dispatchToView = () => this.storageData;
 
-const broadcast = (event, data) => {
-  io.emit(event, data)
-}
+  this.resetAndBroadcastStorage = () => {
+    this.storageData = merge({}, initialData);
+    this.broadcast(this.storageData);
+    return this;
+  };
 
-export const initialize = () => {
-  createConnect()
+  this.updateAndBroadcastStorage = (data) => {
+    this.storageData = merge(this.storageData, data);
+    this.broadcast(this.storageData);
+    return this;
+  };
 
-  io.on('connect', (socket) => {
-    socket.emit("serverState", serverState.current())
-  })
+  this.broadcast = (data) => socket.emit('updated', data);
 
-  logger.info(`Initialized`)
-}
+  this.createConnect = () => {
+    this.resetAndBroadcastStorage();
+    logger.info('Create connection to %s', this.connectTo);
+    this.client = new WebSocket(this.connectTo);
 
-export default {
-  initialize
-}
+    this.client.on('open', () => logger.info('Successfully connected to server'));
 
-SocketEmitter.on("serverState.updated", (data) => serverState.update(data))
-ServerStateEmitter.on("updated", (data) => broadcast("serverState", data))
+    this.client.on('close', () => {
+      logger.info('Connection lost, try reconnect after 15 seconds');
+      setTimeout(this.createConnect.bind(this), 15000);
+    });
+
+    this.client.on('message', (message) => {
+      const data = JSON.parse(message.toString());
+      this.updateAndBroadcastStorage(data);
+    });
+
+    this.client.on('error', (err) => logger.error('Connection failed %s', err.message).error(err.stack));
+  };
+
+  this.createConnect();
+
+  socket.instance.on('connect', (socketClient) => {
+    const op = socket.wrapClient(socketClient);
+    // by the first connect
+    op.emit('updated', this.storageData);
+  });
+
+  return this;
+};

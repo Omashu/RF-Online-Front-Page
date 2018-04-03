@@ -4,33 +4,24 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CompressionPlugin = require("compression-webpack-plugin");
 const url = require('url');
-
-// public path
 const publicPath = "/build/";
 
-// js file names
 const jsFileNames = {
   development : "app.js",
   production : "app.min.js",
 };
 
-// css file names
 const cssFileNames = {
   development : "app.css",
   production : "app.min.css",
 };
 
-// currently js/css file name
 const jsFileName = jsFileNames[process.env.NODE_ENV];
 const cssFileName = cssFileNames[process.env.NODE_ENV];
 
-// define base webpack plugins
 const webpackPlugins = [
-  // import react hot loader
   new webpack.HotModuleReplacementPlugin(),
-  // provide plugins? to global
   new webpack.ProvidePlugin({}),
-  // define environment
   new webpack.DefinePlugin({
     'process.env': {
       NODE_ENV: JSON.stringify(process.env.NODE_ENV)
@@ -38,23 +29,18 @@ const webpackPlugins = [
   }),
 ];
 
-// configure
 switch (process.env.NODE_ENV) {
   case "production":
-    // enable js compress
     webpackPlugins.push(new webpack.optimize.UglifyJsPlugin({
       compressor : {
         warnings : false
       }
     }));
-    // unite all css to one file
     webpackPlugins.push(new ExtractTextPlugin({
       filename : cssFileName,
       allChunks : true
     }));
-    // optimize css assets
     webpackPlugins.push(new OptimizeCssAssetsPlugin());
-    // compress css/js
     webpackPlugins.push(new CompressionPlugin({
       test: /\.(css|js)$/,
       algorithm: "gzip",
@@ -64,7 +50,6 @@ switch (process.env.NODE_ENV) {
   break;
   case "development":
   default:
-    // unite all css to one file
     webpackPlugins.push(new ExtractTextPlugin({
       filename : cssFileName,
       allChunks : true

@@ -1,56 +1,47 @@
-// rename production.json.dot to production.json
-// and update the settings there
 {
   "server": {
     "port": 8091,
     "host": "127.0.0.1"
   },
   "logger": {
-    // trace, debug, info, error
-    "level": "trace"
+    "level": "debug"
   },
   "app": {
-    // page title
     "title": "RF-Online",
-    // brand title
     "brand": "RF-Online",
-    // base url
     "url": "http://localhost:8091",
-    // game start url
-    "startUrl": "http://localhost:8091/how-to-join-to-game",
-    // nav bar navigation
+    "startUrl": "url/to/start",
     "navigation": [
         {
-          "url": "http://localhost:8091",
-          "title": "О сервере"
+          "url": "url/to/about",
+          "title": "About"
         },
         {
-          "url": "http://localhost:8091",
-          "title": "Бонусы на старте"
+          "url": "url/to/bonus",
+          "title": "Bonus"
         },
         {
-          "url": "http://localhost:8091",
-          "title": "Личный кабинет"
+          "url": "url/to/account",
+          "title": "Account"
         },
         {
-          "url": "http://localhost:8091",
-          "title": "Форум"
+          "url": "url/to/forum",
+          "title": "Forum"
         }
     ]
   },
   "modules": {
-    "xenForoNewsParser": {
+    "xenForoParser": {
       "active": true,
-      "baseUrl": "http://localhost:8091/",
-      "sectionUrl": "http://localhost:8091/section/news",
+      "baseUrl": "https://int.cerberus-games.com/",
+      "sectionUrl": "https://int.cerberus-games.com/forums/%D0%9D%D0%BE%D0%B2%D0%BE%D1%81%D1%82%D0%B8.8/",
       "limit": 20,
       "parsePoster": true,
       "tm": 3600
     },
     "ws": {
-      "active": false,
-      // forum url
-      "connectTo": "ws://localhost:8092",
+      "active": true,
+      "connectTo": "ws://localhost:8092"
     }
   }
 }

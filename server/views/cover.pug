@@ -2,21 +2,21 @@
   .overlay
   .container
     .content
-      div.value.header= title
-      div.value Открытие никогда
-      div.value
-        a(href=startUrl).press-to-start.btn Начать играть
+      div.header= title
+      div.subheader Открытие никогда
+      div.start-action
+        a(href=startUrl).btn.btn-primary Начать играть
       div.value.mrt_20
-        span(class="color_white_7") Логин:&nbsp;
-        span(class=cx("js-login__status", {online: serverState.loginStatus, offline: !serverState.loginStatus}))= serverState.loginStatus?"Онлайн":"Оффлайн"
-        span(class="color_white_7") &nbsp;Сервер:&nbsp;
-        span(class=cx("js-server__status", {online: serverState.serverStatus, offline: !serverState.serverStatus}))= serverState.serverStatus?"Онлайн":"Оффлайн"
+        span(class="text-muted") Логин:&nbsp;
+        span(class=cx("js-login__status", {online: getModule('ws.loginStatus'), offline: !getModule('ws.loginStatus')}))= getModule('ws.loginStatus')?"Онлайн":"Оффлайн"
+        span(class="text-muted") &nbsp;Сервер:&nbsp;
+        span(class=cx("js-server__status", {online: getModule('ws.serverStatus'), offline: !getModule('ws.serverStatus')}))= getModule('ws.serverStatus')?"Онлайн":"Оффлайн"
       div.value
-        span(class="color_white_7") Всего онлайн:&nbsp;
-        span(class="js-count__total badge badge-light")= serverState.players.total
-        span(class="color_white_7") &nbsp;Акретия:&nbsp;
-        span(class="js-count__a badge badge-light")= serverState.players.a
-        span(class="color_white_7") &nbsp;Беллато:&nbsp;
-        span(class="js-count__b badge badge-light")= serverState.players.b
-        span(class="color_white_7") &nbsp;Кора:&nbsp;
-        span(class="js-count__c badge badge-light")= serverState.players.c
+        span(class="text-muted") Всего онлайн:&nbsp;
+        span(class="js-count__total badge badge-dark")= getModule('ws.players.total')
+        span(class="text-muted") &nbsp;Акретия:&nbsp;
+        span(class="js-count__a badge badge-dark")= getModule('ws.players.a')
+        span(class="text-muted") &nbsp;Беллато:&nbsp;
+        span(class="js-count__b badge badge-dark")= getModule('ws.players.b')
+        span(class="text-muted") &nbsp;Кора:&nbsp;
+        span(class="js-count__c badge badge-dark")= getModule('ws.players.c')

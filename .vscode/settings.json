@@ -1,0 +1,12 @@
+{
+  "files.eol": "\n",
+  "search.exclude": {
+    ".git": true,
+    ".eslintcache": true,
+    "app/dist": true,
+    "node_modules": true,
+    "npm-debug.log.*": true,
+    "test/**/__snapshots__": true,
+    "yarn.lock": true
+  }
+}

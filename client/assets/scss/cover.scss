@@ -1,0 +1,25 @@
+.cover {
+  margin-top: 60px;
+  margin-bottom: 15px;
+
+  .content {
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+
+    .header {
+      background: none;
+      border: 0;
+      font-size: 36px;
+      padding-bottom: 0;
+    }
+
+    .subheader {
+      font-size: 22px;
+    }
+
+    .start-action {
+      margin: 15px 0;
+    }
+  }
+}
